@@ -4,40 +4,29 @@ require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
 
-# Etape 1
-# puts "### Search for nodes by css"
-BASE_URL = "http://annuaire-des-mairies.com/"
+def emails_valdoise()
+	scrap_stockage = Hash.new(0)
 
-def email_of_a_townhall(path)
-	html_content = open("#{BASE_URL}#{/95/vaureal.html}")
-	document = Nokogiri::HTML(html_content)
-	email = document.css("p.Style22")[11].text
-email.strip.gsub(" ", " ")
-end
-
-puts email_of_a_townhall(path)
-
-=begin
-#Etape 2
-=begin
-def get_all_the_urls_of_val_doise_townhalls
-	scrapeallurls = Nokogiri::HTML(open("http://annuaire-des-mairies.com/val-d-oise.html"))
+	page_val_doise = Nokogiri::HTML(open("http://annuaire-des-mairies.com/val-d-oise.html"))
 	ndd = "http://annuaire-des-mairies.com"
-	scrapeallurls.css('a.lientxt').each do |chose|
-		puts ndd + chose ["href"]
-end 
 
-
-#Etape 3
-#Recoller tout ça
-=begin
-def get_all_the_urls_of_val_doise_townhalls
-	scrapeallurls = Nokogiri::HTML(open("http://annuaire-des-mairies.com/val-d-oise.html"))
-	ndd = "http://annuaire-des-mairies.com"
-	scrapeallurls.css('a.lientxt').each do |chose|
-		puts ndd + chose ["href"]
+	page_val_doise.css('a.lientxt').each do |ancre_ville|
+		ziurl = ndd + ancre_ville["href"]
+		zimail = emails_valdoise(ziurl)
+		scrap_stockage[ancre_ville.text] = zimail
 	end
+
+	puts scrap_stockage
 end
+
+
+def scrap_emails(scrap_url)
+	contenu_a_scrap = Nokogiri::HTML(open(scrap_url))
+	email_addresses = contenu_a_scrap.css('p.Style22')[11].text
+	return email_addresses
+end
+
+url_95()
 
 
 def get_all_the_emails_of_val_doise_townhalls
